@@ -18,19 +18,21 @@ function RegisterComponent() {
   const [country, setCountry] = useState("");
   const [password, setPassword] = useState("");
 
-  function registerUser(ev){
+  async function registerUser(ev){
     ev.preventDefault();
-    axios.post("/register" ,{
-        email,
-        username,
-        number,
-        country,
-        password,
-    }).then(res => {
-        console.log(res);
-    }).catch(err => {
-        console.log(err);
-    });
+    try {
+        await axios.post('/register', {
+            email,
+            username,
+            number,
+            country,
+            password,
+        });
+        alert("User Registered Successfully");
+    }
+    catch(err){
+        alert("User Registration Failed");
+    }
   }
 
   return (
