@@ -3,14 +3,17 @@ const app = express();
 const cors = require('cors');
 const bcrypt = require('bcrypt');
 const User = require('./models/User.js');
+const multer = require('multer');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 const { mongoose } = require('mongoose');
 const cookieParser = require('cookie-parser');
+const fs = require('fs');
+
 
 const secret = bcrypt.genSaltSync(10);
 const jwtSeceret = 'secret';
-
+app.use('/uploads', express.static('uploads'));
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors({
@@ -20,9 +23,6 @@ app.use(cors({
 
 // mongodb connection
 mongoose.connect(process.env.MONGO_URL);
-app.get('/test', (req, res) => {
-    res.json('Hello World!');
-});
 
 // register user
 
@@ -97,5 +97,21 @@ app.get('/account', (req, res) => {
     }
 });
 
+// upload image
+const imagesMiddleware = multer({
+    dest: 'uploads/'
+});
+app.post('/upload', imagesMiddleware.array('img', 15), (req, res) => {
+    const uploadedImgs = [];
+    for(let i = 0; i < req.files.length; i++) {
+        const {path, originalname} = req.files[i];
+        const parts = originalname.split('.');
+        const ext = parts[parts.length - 1];
+        const newPath = path + '.' + ext;
+        fs.renameSync(path, newPath);
+        uploadedImgs.push(newPath.replace('uploads/', ''));
+        }
+    res.json(uploadedImgs);
+});
 
-app.listen(5000);
+app.listen(5000)

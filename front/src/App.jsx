@@ -25,8 +25,7 @@ function App() {
           <Route path="/login" element={<LoginComponent />} />
           <Route path="/register" element={<RegisterComponent />} />
           <Route path="/account/:subpage?" element={<AccountComponent />} />
-          {/* <Route path='/account/bookings' element={<BookingsComponent />} />
-          <Route path='/account/places' element={<PlacesComponent />} /> */}
+          <Route path="/account/:subpage/:action" element={<AccountComponent />} />
         </Route>
       </Routes>
     </UserContextProvider>
